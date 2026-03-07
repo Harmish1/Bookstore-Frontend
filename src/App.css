@@ -320,9 +320,95 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 .checkout-btn:hover:not(:disabled) { background: #6b5ef5; }
 .checkout-btn:disabled { opacity: 0.6; cursor: default; }
 
+/* ─── Social Media Banner ─────────────────────────────────────────────────── */
+.social-banner {
+  background: linear-gradient(135deg, #111118 0%, #1a1a2e 100%);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  padding: 60px 32px;
+}
+.social-banner-inner {
+  max-width: 1300px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 40px;
+}
+.social-banner-text h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  font-weight: 700; margin-bottom: 10px;
+}
+.social-banner-text p {
+  color: var(--muted); font-size: 14px;
+  font-family: 'DM Mono', monospace; max-width: 320px;
+}
+.social-links {
+  display: flex; gap: 16px; flex-wrap: wrap;
+}
+.social-card {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 8px; padding: 20px 28px; border-radius: 14px;
+  border: 1px solid var(--border); text-decoration: none;
+  transition: all 0.25s; cursor: pointer; min-width: 110px;
+  background: var(--surface);
+}
+.social-card:hover { transform: translateY(-4px); }
+.social-icon {
+  font-size: 1.6rem; font-weight: 700; line-height: 1;
+  font-family: 'DM Sans', sans-serif;
+}
+.social-name {
+  font-size: 13px; font-weight: 600; color: var(--text);
+}
+.social-handle {
+  font-size: 11px; color: var(--muted);
+  font-family: 'DM Mono', monospace;
+}
+
+.social-card.instagram:hover {
+  border-color: #e1306c66;
+  background: linear-gradient(135deg, #e1306c11, #f77737110);
+  box-shadow: 0 8px 30px #e1306c22;
+}
+.social-card.instagram .social-name { }
+.social-card.instagram:hover .social-name { color: #e1306c; }
+
+.social-card.twitter:hover {
+  border-color: #1da1f266;
+  background: #1da1f211;
+  box-shadow: 0 8px 30px #1da1f222;
+}
+.social-card.twitter:hover .social-name { color: #1da1f2; }
+
+.social-card.facebook:hover {
+  border-color: #1877f266;
+  background: #1877f211;
+  box-shadow: 0 8px 30px #1877f222;
+}
+.social-card.facebook:hover .social-name { color: #1877f2; }
+
+.social-card.linkedin:hover {
+  border-color: #0a66c266;
+  background: #0a66c211;
+  box-shadow: 0 8px 30px #0a66c222;
+}
+.social-card.linkedin:hover .social-name { color: #0a66c2; }
+
 /* ─── Footer ─────────────────────────────────────────────────────────────── */
 .footer {
-  text-align: center; padding: 28px;
+  text-align: center; padding: 24px 32px;
   font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted);
   border-top: 1px solid var(--border);
 }
+.footer-inner {
+  display: flex; align-items: center; justify-content: space-between;
+  max-width: 1300px; margin: 0 auto; flex-wrap: wrap; gap: 12px;
+}
+.footer-socials {
+  display: flex; gap: 14px;
+}
+.footer-socials a {
+  color: var(--muted); text-decoration: none; font-size: 14px;
+  font-weight: 700; transition: color 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+.footer-socials a:hover { color: var(--accent); }

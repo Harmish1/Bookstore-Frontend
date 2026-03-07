@@ -414,8 +414,48 @@ export default function App() {
         />
       )}
 
+      {/* Social Media Banner */}
+      <section className="social-banner">
+        <div className="social-banner-inner">
+          <div className="social-banner-text">
+            <h2>Follow <span className="accent">PageTurn</span></h2>
+            <p>Stay updated with new arrivals, reading recommendations and exclusive deals</p>
+          </div>
+          <div className="social-links">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-card instagram">
+              <span className="social-icon">📸</span>
+              <span className="social-name">Instagram</span>
+              <span className="social-handle">@pageturn</span>
+            </a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="social-card twitter">
+              <span className="social-icon">𝕏</span>
+              <span className="social-name">Twitter / X</span>
+              <span className="social-handle">@pageturn</span>
+            </a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-card facebook">
+              <span className="social-icon">f</span>
+              <span className="social-name">Facebook</span>
+              <span className="social-handle">/pageturn</span>
+            </a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="social-card linkedin">
+              <span className="social-icon">in</span>
+              <span className="social-name">LinkedIn</span>
+              <span className="social-handle">/pageturn</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
       <footer className="footer">
-        BookVault © 2025 · CSC8113 DevOps Project · React + Vite + Kubernetes
+        <div className="footer-inner">
+          <span>PageTurn © 2025 · CSC8113 DevOps Project · React + Vite + Kubernetes</span>
+          <div className="footer-socials">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">📸</a>
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">𝕏</a>
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">f</a>
+            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">in</a>
+          </div>
+        </div>
       </footer>
       </>)}
     </div>
