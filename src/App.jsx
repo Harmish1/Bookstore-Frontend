@@ -322,7 +322,7 @@ export default function App() {
 
       <nav className="navbar">
         <div className="nav-left">
-          <div className="nav-logo">📚 <span>BookVault</span></div>
+          <div className="nav-logo">📚 <span>PageTurn</span></div>
           <div className="service-badges">
             <ServiceBadge name="Catalog" online={services.catalog} />
             <ServiceBadge name="Cart" online={services.cart} />
@@ -408,7 +408,7 @@ export default function App() {
       )}
 
       <footer className="footer">
-        BookVault © 2025 · CSC8113 DevOps Project · React + Vite + Kubernetes
+        PageTurn © 2025 · CSC8113 DevOps Project · React + Vite + Kubernetes
       </footer>
     </div>
   );
