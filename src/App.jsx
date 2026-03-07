@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import "./App.css";
+import HelpCentre from "./HelpCentre";
 
 const USER_ID = "user-1";
 const CATEGORIES = ["All", "Programming", "DevOps", "Architecture", "JavaScript"];
@@ -222,6 +223,7 @@ export default function App() {
   const [addingId, setAddingId] = useState(null);
   const [checking, setChecking] = useState(false);
   const [services, setServices] = useState({ catalog: false, cart: false });
+  const [helpOpen, setHelpOpen] = useState(false);
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
@@ -318,11 +320,13 @@ export default function App() {
 
   return (
     <div className="app">
+      {helpOpen && <HelpCentre onBack={() => setHelpOpen(false)} />}
+      {!helpOpen && (<>
       {toast && <div className={`toast toast-${toast.type}`}>{toast.msg}</div>}
 
       <nav className="navbar">
         <div className="nav-left">
-          <div className="nav-logo">📚 <span>PageTurn</span></div>
+          <div className="nav-logo">📚 <span>BookVault</span></div>
           <div className="service-badges">
             <ServiceBadge name="Catalog" online={services.catalog} />
             <ServiceBadge name="Cart" online={services.cart} />
@@ -336,6 +340,9 @@ export default function App() {
         />
         <button className="cart-btn" onClick={() => setCartOpen(true)}>
           🛒 Cart {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
+        </button>
+        <button className="help-btn" onClick={() => setHelpOpen(true)}>
+          ❓ Help
         </button>
       </nav>
 
@@ -408,8 +415,9 @@ export default function App() {
       )}
 
       <footer className="footer">
-        PageTurn © 2025 · CSC8113 DevOps Project · React + Vite + Kubernetes
+        BookVault © 2025 · CSC8113 DevOps Project · React + Vite + Kubernetes
       </footer>
+      </>)}
     </div>
   );
 }

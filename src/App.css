@@ -15,7 +15,9 @@
   --warn: #f59e0b;
 }
 
-body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; width: 100%; overflow-x: hidden; }
+
+.app { width: 100%; min-height: 100vh; }
 
 /* ─── Navbar ─────────────────────────────────────────────────────────────── */
 .navbar {
@@ -61,6 +63,15 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
   background: var(--accent); color: #fff;
   border-radius: 20px; padding: 1px 7px; font-size: 11px; font-weight: 600;
 }
+
+.help-btn {
+  display: flex; align-items: center; gap: 8px;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--muted); padding: 9px 20px; border-radius: 10px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+  cursor: pointer; transition: all 0.2s; white-space: nowrap;
+}
+.help-btn:hover { border-color: var(--accent2); color: var(--accent2); }
 
 /* ─── Hero ───────────────────────────────────────────────────────────────── */
 .hero {
