@@ -326,7 +326,7 @@ export default function App() {
 
       <nav className="navbar">
         <div className="nav-left">
-          <div className="nav-logo">📚 <span>BookVault</span></div>
+          <div className="nav-logo">📜<span>PageTurn</span></div>
           <div className="service-badges">
             <ServiceBadge name="Catalog" online={services.catalog} />
             <ServiceBadge name="Cart" online={services.cart} />
@@ -348,8 +348,8 @@ export default function App() {
 
       <section className="hero">
         <div className="hero-text">
-          <p className="hero-eyebrow">CSC8113 · Microservices Bookstore</p>
-          <h1>Find your next <span className="accent">great read</span></h1>
+   
+         <h1>Find your next <span className="accent">great read</span></h1>
           <p className="hero-sub">Powered by Flask Catalog Service · Spring Boot Cart Service · PostgreSQL</p>
         </div>
         <div className="hero-stats">
