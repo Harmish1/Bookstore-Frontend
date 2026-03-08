@@ -369,11 +369,12 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 
 .social-card.instagram:hover {
   border-color: #e1306c66;
-  background: linear-gradient(135deg, #e1306c11, #f77737110);
+  background: linear-gradient(135deg, #e1306c11, #f7773711);
   box-shadow: 0 8px 30px #e1306c22;
 }
-.social-card.instagram .social-name { }
 .social-card.instagram:hover .social-name { color: #e1306c; }
+.social-card.instagram:hover .social-icon svg { stroke: #e1306c; }
+.social-card.instagram:hover .social-icon svg circle[fill="currentColor"] { fill: #e1306c; }
 
 .social-card.twitter:hover {
   border-color: #1da1f266;

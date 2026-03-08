@@ -319,8 +319,12 @@ function BookDetail({ book, onClose, onAdd, adding, wishlist, onToggleWishlist }
                 </span>
               </div>
               <div className="detail-meta-item">
-                <span className="detail-meta-label">ISBN</span>
-                <span className="detail-meta-value">{book.isbn}</span>
+                <span className="detail-meta-label">Genre</span>
+                <span className="detail-meta-value">{book.category}</span>
+              </div>
+              <div className="detail-meta-item">
+                <span className="detail-meta-label">Rating</span>
+                <span className="detail-meta-value">{book.rating} / 5.0</span>
               </div>
             </div>
 
@@ -523,7 +527,7 @@ export default function App() {
           🛒 Cart {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
         </button>
         <button className="help-btn" onClick={() => setHelpOpen(true)}>
-          ❓ Help
+           Help
         </button>
       </nav>
 
@@ -612,7 +616,13 @@ export default function App() {
           </div>
           <div className="social-links">
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-card instagram">
-              <span className="social-icon">📸</span>
+              <span className="social-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                  <circle cx="12" cy="12" r="4"/>
+                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+                </svg>
+              </span>
               <span className="social-name">Instagram</span>
               <span className="social-handle">@pageturn</span>
             </a>
@@ -637,9 +647,15 @@ export default function App() {
 
       <footer className="footer">
         <div className="footer-inner">
-          <span>PageTurn © 2025/2026 </span>
+          <span>PageTurn © 2025/2026</span>
           <div className="footer-socials">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">📷</a>
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+                <circle cx="12" cy="12" r="4"/>
+                <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+              </svg>
+            </a>
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">𝕏</a>
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">f</a>
             <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">in</a>
