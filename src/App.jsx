@@ -375,7 +375,11 @@ function CartSidebar({ cart, onClose, onUpdate, onRemove, onCheckout, checking }
                   <div className="cart-item-controls">
                     <button onClick={() => onUpdate(item.id, item.qty - 1)}>−</button>
                     <span>{item.qty}</span>
-                    <button onClick={() => onUpdate(item.id, item.qty + 1)}>+</button>
+                    <button
+                      onClick={() => onUpdate(item.id, item.qty + 1)}
+                      disabled={item.qty >= item.stock}
+                      title={item.qty >= item.stock ? "Max stock reached" : ""}
+                    >+</button>
                     <button className="remove-btn" onClick={() => onRemove(item.id)} title="Remove">🗑</button>
                   </div>
                 </div>
@@ -412,6 +416,7 @@ export default function App() {
   const [checking, setChecking] = useState(false);
   const [services, setServices] = useState({ catalog: false, cart: false });
   const [helpOpen, setHelpOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState("shop");
   const [selectedBook, setSelectedBook] = useState(null);
 
   const showToast = (msg, type = "success") => {
@@ -448,12 +453,17 @@ export default function App() {
   }, []);
 
   const handleAdd = useCallback(async (book) => {
-    setAddingId(book.id);
     setCart(prev => {
       const existing = prev.find(i => i.id === book.id);
+      const currentQty = existing ? existing.qty : 0;
+      if (currentQty >= book.stock) {
+        showToast(`Only ${book.stock} copies available!`, "error");
+        return prev;
+      }
       if (existing) return prev.map(i => i.id === book.id ? { ...i, qty: i.qty + 1 } : i);
       return [...prev, { ...book, qty: 1 }];
     });
+    setAddingId(book.id);
     await cartApi.addItem(USER_ID, book);
     showToast(`"${book.title}" added to cart!`);
     setAddingId(null);
@@ -461,9 +471,14 @@ export default function App() {
 
   const handleUpdate = useCallback(async (id, qty) => {
     if (qty < 1) return handleRemove(id);
+    const book = books.find(b => b.id === id);
+    if (book && qty > book.stock) {
+      showToast(`Only ${book.stock} copies available!`, "error");
+      return;
+    }
     setCart(prev => prev.map(i => i.id === id ? { ...i, qty } : i));
     await cartApi.updateItem(USER_ID, id, qty);
-  }, []);
+  }, [books]);
 
   const handleRemove = useCallback(async (id) => {
     setCart(prev => prev.filter(i => i.id !== id));
@@ -515,75 +530,146 @@ export default function App() {
 
       <nav className="navbar">
         <div className="nav-left">
-          <div className="nav-logo">📜 <span>PageTurn</span></div>
+          <div className="nav-logo" style={{cursor:"pointer"}} onClick={() => setActiveTab("shop")}>📜 <span>PageTurn</span></div>
         </div>
         <input
           className="search-input"
           placeholder="Search books or authors…"
           value={search}
-          onChange={e => setSearch(e.target.value)}
+          onChange={e => { setSearch(e.target.value); setActiveTab("shop"); }}
         />
-        <button className="cart-btn" onClick={() => setCartOpen(true)}>
-          🛒 Cart {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
-        </button>
-        <button className="help-btn" onClick={() => setHelpOpen(true)}>
-           Help
-        </button>
+        <div className="nav-right">
+          <button className={`nav-tab-btn ${activeTab === "shop" ? "active" : ""}`} onClick={() => setActiveTab("shop")}>
+            🏠 Shop
+          </button>
+          <button className={`nav-tab-btn wishlist-tab ${activeTab === "wishlist" ? "active" : ""}`} onClick={() => setActiveTab("wishlist")}>
+            ♥ Wishlist
+            {wishlist.length > 0 && <span className="nav-badge">{wishlist.length}</span>}
+          </button>
+          <button className="cart-btn" onClick={() => setCartOpen(true)}>
+            🛒 Cart {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
+          </button>
+          <button className="help-btn" onClick={() => setHelpOpen(true)}>
+             Help
+          </button>
+        </div>
       </nav>
 
-      <section className="hero">
-        <div className="hero-text">
-          <h1>Find your next <span className="accent">great read</span></h1>
-          <p className="hero-sub">Books for every age, genre and taste 📜</p>
-        </div>
-        <div className="hero-stats">
-          <div className="stat"><span>{books.length || "100"}+</span><label>Books</label></div>
-          <div className="stat"><span>11</span><label>Genres</label></div>
-          <div className="stat"><span>4.7★</span><label>Avg Rating</label></div>
-        </div>
-      </section>
-
-      <div className="controls-bar">
-        <div className="category-bar">
-          {CATEGORIES.map(cat => (
-            <button key={cat} className={`cat-btn ${category === cat ? "active" : ""}`} onClick={() => setCategory(cat)}>
-              {cat}
-            </button>
-          ))}
-        </div>
-        <select className="sort-select" value={sort} onChange={e => setSort(e.target.value)}>
-          {SORT_OPTIONS.map(s => <option key={s} value={s}>{s === "Featured" ? "Sort: Featured" : s}</option>)}
-        </select>
-      </div>
-
-      <main className="catalog">
-        <div className="catalog-header">
-          <h2>{category === "All" ? "All Books" : category} <span className="count">({filtered.length} found)</span></h2>
-        </div>
-
-        {loading ? (
-          <div className="loading-grid">
-            {[...Array(8)].map((_, i) => <div key={i} className="skeleton" />)}
+      {activeTab === "shop" && (
+        <section className="hero">
+          <div className="hero-text">
+            <h1>Find your next <span className="accent">great read</span></h1>
+            <p className="hero-sub">Books for every age, genre and taste </p>
           </div>
-        ) : (
-          <div className="book-grid">
-            {filtered.map(book => (
-              <BookCard
-                key={book.id}
-                book={book}
-                onAdd={handleAdd}
-                adding={addingId === book.id}
-                wishlist={wishlist}
-                onToggleWishlist={handleToggleWishlist}
-                onClick={() => setSelectedBook(book)}
-              />
+          <div className="hero-stats">
+            <div className="stat"><span>{books.length || "100"}+</span><label>Books</label></div>
+            <div className="stat"><span>11</span><label>Genres</label></div>
+            <div className="stat"><span>4.7★</span><label>Avg Rating</label></div>
+          </div>
+        </section>
+      )}
+
+      {activeTab === "shop" && (
+        <div className="controls-bar">
+          <div className="category-bar">
+            {CATEGORIES.map(cat => (
+              <button key={cat} className={`cat-btn ${category === cat ? "active" : ""}`} onClick={() => setCategory(cat)}>
+                {cat}
+              </button>
             ))}
-            {filtered.length === 0 && (
-              <div className="no-results">No books found for "{search}"</div>
+          </div>
+          <select className="sort-select" value={sort} onChange={e => setSort(e.target.value)}>
+            {SORT_OPTIONS.map(s => <option key={s} value={s}>{s === "Featured" ? "Sort: Featured" : s}</option>)}
+          </select>
+        </div>
+      )}
+
+      {/* ── Shop Tab ── */}
+      {activeTab === "shop" && (
+        <main className="catalog">
+          <div className="catalog-header">
+            {(category !== "All" || search) && (
+              <h2>
+                {search ? <>Search Results <span className="search-tag">&ldquo;{search}&rdquo;</span></> : category}
+                <span className="count"> ({filtered.length} {filtered.length === 1 ? "book" : "books"})</span>
+              </h2>
+            )}
+            {(category !== "All" || search) && (
+              <button
+                onClick={() => { setCategory("All"); setSearch(""); }}
+                style={{
+                  background:"transparent", border:"1px solid #ffffff15",
+                  color:"var(--muted)", borderRadius:8, padding:"5px 12px",
+                  fontSize:12, cursor:"pointer", fontFamily:"'DM Sans',sans-serif",
+                  transition:"all 0.2s",
+                }}
+                onMouseEnter={e => { e.currentTarget.style.borderColor="var(--accent)"; e.currentTarget.style.color="var(--accent)"; }}
+                onMouseLeave={e => { e.currentTarget.style.borderColor="#ffffff15"; e.currentTarget.style.color="var(--muted)"; }}
+              >
+                ✕ Clear filters
+              </button>
             )}
           </div>
-        )}
-      </main>
+          {loading ? (
+            <div className="loading-grid">
+              {[...Array(8)].map((_, i) => <div key={i} className="skeleton" />)}
+            </div>
+          ) : (
+            <div className="book-grid">
+              {filtered.map(book => (
+                <BookCard
+                  key={book.id}
+                  book={book}
+                  onAdd={handleAdd}
+                  adding={addingId === book.id}
+                  wishlist={wishlist}
+                  onToggleWishlist={handleToggleWishlist}
+                  onClick={() => setSelectedBook(book)}
+                />
+              ))}
+              {filtered.length === 0 && (
+                <div className="no-results">No books found for "{search}"</div>
+              )}
+            </div>
+          )}
+        </main>
+      )}
+
+      {/* ── Wishlist Tab ── */}
+      {activeTab === "wishlist" && (
+        <main className="catalog">
+          <div className="catalog-header wishlist-header">
+            <div className="wishlist-title-row">
+              <h2>♥ My Wishlist <span className="count">({wishlist.length} {wishlist.length === 1 ? "book" : "books"})</span></h2>
+              {wishlist.length > 0 && (
+                <button className="clear-wishlist-btn" onClick={() => setWishlist([])}>Clear all</button>
+              )}
+            </div>
+          </div>
+          {wishlist.length === 0 ? (
+            <div className="wishlist-empty">
+              <span className="wishlist-empty-icon">🤍</span>
+              <h3>Your wishlist is empty</h3>
+              <p>Click the ♡ heart on any book to save it here</p>
+              <button className="browse-btn" onClick={() => setActiveTab("shop")}>Browse Books →</button>
+            </div>
+          ) : (
+            <div className="book-grid">
+              {books.filter(b => wishlist.includes(b.id)).map(book => (
+                <BookCard
+                  key={book.id}
+                  book={book}
+                  onAdd={handleAdd}
+                  adding={addingId === book.id}
+                  wishlist={wishlist}
+                  onToggleWishlist={handleToggleWishlist}
+                  onClick={() => setSelectedBook(book)}
+                />
+              ))}
+            </div>
+          )}
+        </main>
+      )}
 
       {selectedBook && (
         <BookDetail
@@ -617,27 +703,39 @@ export default function App() {
           <div className="social-links">
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="social-card instagram">
               <span className="social-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
                   <circle cx="12" cy="12" r="4"/>
-                  <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+                  <circle cx="17.5" cy="6.5" r="1.2" fill="currentColor" stroke="none"/>
                 </svg>
               </span>
               <span className="social-name">Instagram</span>
               <span className="social-handle">@pageturn</span>
             </a>
             <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="social-card twitter">
-              <span className="social-icon">𝕏</span>
+              <span className="social-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                </svg>
+              </span>
               <span className="social-name">Twitter / X</span>
               <span className="social-handle">@pageturn</span>
             </a>
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-card facebook">
-              <span className="social-icon">f</span>
+              <span className="social-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+              </span>
               <span className="social-name">Facebook</span>
               <span className="social-handle">/pageturn</span>
             </a>
             <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="social-card linkedin">
-              <span className="social-icon">in</span>
+              <span className="social-icon">
+                <svg viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.064 2.064 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                </svg>
+              </span>
               <span className="social-name">LinkedIn</span>
               <span className="social-handle">/pageturn</span>
             </a>
@@ -647,7 +745,7 @@ export default function App() {
 
       <footer className="footer">
         <div className="footer-inner">
-          <span>PageTurn © 2025/2026</span>
+          <span>PageTurn © 2025/2026 </span>
           <div className="footer-socials">
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
