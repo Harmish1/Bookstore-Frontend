@@ -27,7 +27,7 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
   border-bottom: 1px solid var(--border);
 }
 .nav-left { display: flex; align-items: center; gap: 20px; flex: 1; }
-.nav-logo { display: flex; align-items: center; gap: 10px; font-size: 1.25rem; font-weight: 600; letter-spacing: -0.3px; white-space: nowrap; }
+.nav-logo { display: flex; align-items: center; gap: 10px; font-size: 1.25rem; font-weight: 400; letter-spacing: 0.5px; white-space: nowrap; font-family: "Playfair Display", serif; }
 .service-badges { display: flex; gap: 10px; }
 .service-badge {
   display: flex; align-items: center; gap: 6px;
@@ -503,3 +503,27 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
   transition: color 0.2s; display: flex; align-items: center;
 }
 .footer-socials a:hover { color: var(--accent); }
+
+/* ─── User Pill (navbar) ─────────────────────────────────────────────────── */
+.user-pill {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 50px; padding: 5px 12px 5px 5px;
+}
+.user-avatar {
+  width: 28px; height: 28px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  font-size: 12px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.user-name {
+  font-size: 13px; font-weight: 500; color: var(--text);
+  max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.logout-btn {
+  background: none; border: none; color: var(--muted);
+  cursor: pointer; font-size: 15px; padding: 0 2px;
+  transition: color 0.2s; line-height: 1;
+}
+.logout-btn:hover { color: var(--danger); }

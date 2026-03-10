@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import "./App.css";
 import HelpCentre from "./HelpCentre";
 
-const USER_ID = "user-1";
+// USER_ID is now derived from the logged-in user (set at login)
 const CATEGORIES = ["All", "Fiction", "Science", "History", "Biography", "Self-Help", "Programming", "Fantasy", "Mystery", "Psychology", "Business", "Kids"];
 const SORT_OPTIONS = ["Featured", "Price: Low to High", "Price: High to Low", "Rating", "Title A-Z"];
 
@@ -418,6 +419,12 @@ export default function App() {
   const [helpOpen, setHelpOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("shop");
   const [selectedBook, setSelectedBook] = useState(null);
+  const navigate = useNavigate();
+  const storedUser = JSON.parse(sessionStorage.getItem("pt_user") || "{}");
+  const USER_ID = storedUser.email || "user-1";
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const handleLogout = () => setShowLogoutConfirm(true);
+  const confirmLogout = () => { sessionStorage.removeItem("pt_user"); navigate("/login"); };
 
   const showToast = (msg, type = "success") => {
     setToast({ msg, type });
@@ -550,8 +557,13 @@ export default function App() {
             🛒 Cart {totalItems > 0 && <span className="cart-badge">{totalItems}</span>}
           </button>
           <button className="help-btn" onClick={() => setHelpOpen(true)}>
-             Help
+            ❓ Help
           </button>
+          <div className="user-pill">
+            <div className="user-avatar">{storedUser.name ? storedUser.name[0].toUpperCase() : "U"}</div>
+            <span className="user-name">{storedUser.name || "User"}</span>
+            <button className="logout-btn" onClick={handleLogout} title="Sign out">↩</button>
+          </div>
         </div>
       </nav>
 
@@ -559,7 +571,7 @@ export default function App() {
         <section className="hero">
           <div className="hero-text">
             <h1>Find your next <span className="accent">great read</span></h1>
-            <p className="hero-sub">Books for every age, genre and taste </p>
+            <p className="hero-sub">Books for every age, genre and taste 📜</p>
           </div>
           <div className="hero-stats">
             <div className="stat"><span>{books.length || "100"}+</span><label>Books</label></div>
@@ -682,6 +694,19 @@ export default function App() {
         />
       )}
 
+      {showLogoutConfirm && (
+        <div className="cart-overlay" onClick={() => setShowLogoutConfirm(false)}>
+          <div className="detail-modal" style={{maxWidth:400, padding:"2rem", textAlign:"center"}} onClick={e => e.stopPropagation()}>
+            <h2 style={{marginBottom:"0.5rem"}}>Sign Out</h2>
+            <p style={{color:"var(--muted)", marginBottom:"1.5rem"}}>Are you sure you want to log out?</p>
+            <div style={{display:"flex", gap:"1rem", justifyContent:"center"}}>
+              <button className="checkout-btn" style={{width:"auto", padding:"0.6rem 1.5rem"}} onClick={confirmLogout}>Yes, log out</button>
+              <button className="detail-close" style={{position:"static", fontSize:"1rem", padding:"0.6rem 1.5rem", border:"1px solid #ffffff20", borderRadius:8}} onClick={() => setShowLogoutConfirm(false)}>Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {cartOpen && (
         <CartSidebar
           cart={cart}
@@ -745,7 +770,7 @@ export default function App() {
 
       <footer className="footer">
         <div className="footer-inner">
-          <span>PageTurn © 2025/2026 </span>
+          <span>PageTurn © 2025 · CSC8113 DevOps Project · React + Vite + Kubernetes</span>
           <div className="footer-socials">
             <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" title="Instagram">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
